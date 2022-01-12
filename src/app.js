@@ -21,6 +21,47 @@ function formatDate(timestamp) {
     let day = days[date.getDay()];
     return `${day} ${hours}:${minutes}`;
 }
+function formatDay(timestemp) {
+    let date = new Date(timestemp * 1000);
+    let day = date.getDay();
+    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    return days[day];
+}
+function displayForcast(response) {
+    let forcast = response.data.daily;
+
+    let forcatsElement = document.querySelector("#forcast");
+
+    let forcastHtml = `<div class="row">`;
+
+    forcast.forEach(function (forcastDay, index) {
+        if (index < 6) {
+            forcastHtml = forcastHtml + `<div class="col-2" >
+                            <div id="weather-forcast-date">
+                                ${formatDay(forcastDay.dt)}
+                            </div>
+                            <img src="http://openweathermap.org/img/wn/${forcastDay.weather[0].icon}@2x.png" alt="" width="42"/>
+                            <div class="weather-forcast-tem">
+                                <span class="weather-forcast-max"> ${Math.round(forcastDay.temp.max)}°</span>
+                                <span class="weather-forcast-min"> ${Math.round(forcastDay.temp.min)}°</span>
+                            </div>
+                        </div>`;
+        }
+    });
+
+
+
+    forcastHtml = forcastHtml + `</div >`;
+    forcatsElement.innerHTML = forcastHtml;
+}
+
+function getForecast(coordinates) {
+
+    let apiKey = "256a30f9fb5ee55039e6c546147b0e63";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lon}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayForcast);
+}
 function displayTemperature(response) {
     let temperatureElement = document.querySelector("#temperature");
     let discriptionElement = document.querySelector("#discription");
@@ -39,6 +80,7 @@ function displayTemperature(response) {
     iconElement.setAttribute("src", `http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`);
     iconElement.setAttribute("alt", response.data.weather[0].description);
 
+    getForecast(response.data.coord);
 }
 function search(city) {
     let apiKey = "256a30f9fb5ee55039e6c546147b0e63";
