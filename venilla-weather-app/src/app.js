@@ -46,7 +46,16 @@ function displayTemperature(response) {
     iconElement.setAttribute("alt", response.data.weather[0].description);
 
 }
-let apiKey = "256a30f9fb5ee55039e6c546147b0e63";
-let city = "paris";
-let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
-axios.get(apiUrl).then(displayTemperature);
+function serach(city) {
+    let apiKey = "256a30f9fb5ee55039e6c546147b0e63";
+    let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(displayTemperature);
+
+}
+function handleSubmit(event) {
+    event.preventDefault();
+    let cityInputlement = document.querySelector("#city-input");
+    serach(cityInputlement.value);
+}
+let form = document.querySelector("#search-form");
+form.addEventListener("submit", handleSubmit);
